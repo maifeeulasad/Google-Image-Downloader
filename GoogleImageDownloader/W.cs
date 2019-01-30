@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,61 +13,52 @@ namespace GoogleImageDownloader
 {
     public class W
     {
-        WebBrowser web;
 
-        public W()
+        public static string GoogleURL(string name)
         {
-            Init();
-        }
-        public W(string url)
-        {
-            Init();
-            Load(url);
-
-        }
-
-        void Init()
-        {
-            var t = new Thread(I);
-            t.SetApartmentState(ApartmentState.STA);
-            t.Start();
-
-        }
-
-        void I()
-        {
-            web = new WebBrowser();
-            web.DocumentCompleted += Web_DocumentCompleted;
-        }
-
-        private void Web_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
-        {
-            Show();
-            //throw new NotImplementedException();
-        }
-
-        public void Load(string url)
-        {
-            web.Navigate(url);
-
-            for(int i=0;i<100000;i++)
+            string[] p = name.Split();
+            string x = "";
+            foreach (string y in p)
             {
-
+                x += y + "+";
             }
+            x = x.Substring(0, x.Length - 1);
+            return "https://www.google.com/search?q=" + x + "&source=lnms&tbm=isch&sa=X";
         }
 
-
-
-
-        void Show()
+        public static string GetData(string url)
         {
-            var c = web.Document.Images;
-            foreach (var x in c)
+
+            url = GoogleURL(url);
+
+            string data = "";
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                Debug.WriteLine(x);
+                Stream receiveStream = response.GetResponseStream();
+                StreamReader readStream = null;
+
+                if (response.CharacterSet == null)
+                {
+                    readStream = new StreamReader(receiveStream);
+                }
+                else
+                {
+                    readStream = new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
+                }
+
+                data = readStream.ReadToEnd();
+
+                response.Close();
+                readStream.Close();
             }
+
+            return data;
         }
-        
+
 
     }
 }

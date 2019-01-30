@@ -17,11 +17,15 @@ namespace GoogleImageDownloader
         
         static void Main(string[] args)
         {
+            string x = W.GetData("hello world");
 
-            W w = new W();
-            w.Load("www.google.com");
+            Debug.WriteLine("-----------------");
+
+            Debug.WriteLine(x);
+            Debug.WriteLine("-----------------");
+
         }
 
-        
+
     }
 }
