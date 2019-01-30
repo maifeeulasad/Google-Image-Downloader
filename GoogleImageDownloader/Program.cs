@@ -19,10 +19,17 @@ namespace GoogleImageDownloader
         {
             string x = W.GetData("hello world");
 
-            Debug.WriteLine("-----------------");
+            //Debug.WriteLine(x);
 
-            Debug.WriteLine(x);
-            Debug.WriteLine("-----------------");
+            ParseHTML ll = new ParseHTML(x, "img");
+
+            List<string> dd = ParseHTML.rData;
+
+
+            foreach(string zz in dd)
+            {
+                Debug.WriteLine(zz);
+            }
 
         }
 
